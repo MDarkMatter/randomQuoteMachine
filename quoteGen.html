@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FreeCodeCamp - Random Quote Generator</title>
+    <title>Random Quote Generator - freeCodeCamp</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -24,18 +24,22 @@
         <div class="row">
             <h1>Random Quote Machine</h1>
         </div>
+
+        <div class="row">
+            <div class='col-xs-6 col-xs-offset-3 well'>
+                <h1 id='quote'></h1>
+                <i><h3 id="author"></h3></i>
+                <a id ='twitter' class="twitter-share-button" href="https://twitter.com/intent/tweet" data-text='Quote'>
+                    Tweet
+                </a>
+            </div>
+        </div>
         <div class="row">
             <div class="col-xs-12">
                 <button id='quotebutton' type="button" class="btn btn-primary">
                     Random Quote
                 </button>
-            </div>
-        </div>
-        <div class="row">
-            <div class='col-xs-6 col-xs-offset-3 well'>
-              <h1 class='quote'>
 
-              </h1>
             </div>
         </div>
     </div>
@@ -45,14 +49,44 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script>
+        ! function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+                p = /^http:/.test(d.location) ? 'http' : 'https';
+            if (!d.getElementById(id)) {
+                js = d.createElement(s);
+                js.id = id;
+                js.src = p + '://platform.twitter.com/widgets.js';
+                fjs.parentNode.insertBefore(js, fjs);
+
+            }
+        }(document, 'script', 'twitter-wjs');
+    </script>
+
+    <script>
         $(document).ready(function() {
             $("#quotebutton").on("click", function() {
-               $.getJSON("http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json", function(json) {
-               $(".quote").html(JSON.parse((JSON.stringify(json.quoteText + "<br />" + "<i>" + "  - " + json.quoteAuthor + "</i>"))));
-               });
+                $.ajax({
+                    type: "GET",
+                    crossDomain: true,
+                    url: "http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=jsonp&jsonp=parseQuote",
+                    dataType: "jsonp",
+                    jsonpCallback: "parseQuote"
+                });
             });
+
         });
     </script>
+    <script>
+        function parseQuote(response) {
+            document.getElementById("quote").innerHTML = response.quoteText;
+            document.getElementById("author").innerHTML = response.quoteAuthor;
+        }
+    </script>
+
+
+
+
+
 </body>
 
 </html>
